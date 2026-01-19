@@ -23,7 +23,7 @@
 		<cluster name="src" location=".\src\" recursive="true"/>
 	</target>
 	<target name="simple_zstring_tests" extends="simple_zstring">
-		<root class="TEST_RUNNER" feature="make"/>
+		<root class="TEST_APP" feature="make"/>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<cluster name="test_suite" location=".\testing\"/>
 	</target>

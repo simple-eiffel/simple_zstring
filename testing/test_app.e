@@ -5,7 +5,7 @@ note
 	revision: "$Revision$"
 
 class
-	TEST_RUNNER
+	TEST_APP
 
 create
 	make
