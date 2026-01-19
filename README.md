@@ -26,7 +26,7 @@
 
 ## Overview
 
-SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage architecture. Characters are stored in an 8-bit primary area using ISO-8859-15 (Latin-9) encoding, with Unicode characters outside the codec range stored in a compact secondary area.
+SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage architecture. Inspired by the ZSTRING implementation in [Eiffel-Loop](https://github.com/finnianr/Eiffel-Loop). Characters are stored in an 8-bit primary area using ISO-8859-15 (Latin-9) encoding, with Unicode characters outside the codec range stored in a compact secondary area.
 
 This approach provides ~70% memory savings for Western European text while supporting the full Unicode range including emoji and CJK characters. The library includes utilities for splitting, searching, escaping, formatting, and fluent string building.
 
