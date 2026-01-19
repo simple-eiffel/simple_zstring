@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple_zstring - Memory-Efficient Unicode Strings</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --code-bg: #1e1e1e;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--bg);
+        }
+        h1 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; }
+        h2 { color: var(--secondary); margin-top: 2rem; }
+        code { background: #e2e8f0; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+        pre { background: var(--code-bg); color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; padding: 0; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+        th, td { border: 1px solid #cbd5e1; padding: 0.75rem; text-align: left; }
+        th { background: #e2e8f0; }
+        .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; margin-right: 0.5rem; }
+        .badge-blue { background: #dbeafe; color: #1e40af; }
+        .badge-green { background: #dcfce7; color: #166534; }
+        .badge-orange { background: #ffedd5; color: #9a3412; }
+        .architecture { background: #f1f5f9; padding: 1rem; border-radius: 8px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>simple_zstring</h1>
+
+    <p>
+        <span class="badge badge-blue">Eiffel 25.02</span>
+        <span class="badge badge-green">MIT License</span>
+        <span class="badge badge-orange">simple-eiffel</span>
+    </p>
+
+    <p>Memory-efficient Unicode string library with dual-storage architecture.</p>
+
+    <h2>Overview</h2>
+    <p>SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage architecture:</p>
+    <ul>
+        <li><strong>Primary Storage</strong>: 8-bit characters encoded using ISO-8859-15 (Latin-9)</li>
+        <li><strong>Secondary Storage</strong>: Compact storage for Unicode characters outside the codec range</li>
+    </ul>
+    <p>This approach provides ~70% memory savings for Western European text while supporting the full Unicode range.</p>
+
+    <h2>Architecture</h2>
+    <div class="architecture">
+SIMPLE_ZSTRING
+    area: SPECIAL [CHARACTER_8]           -- Primary 8-bit storage
+    unencoded_area: SIMPLE_COMPACT_SUBSTRINGS_32  -- Unicode overflow
+    codec: SIMPLE_ZCODEC                  -- Character encoding
+    </div>
+
+    <h2>Quick Start</h2>
+    <pre><code>local
+    z: SIMPLE_ZSTRING
+do
+    -- Create from string
+    create z.make_from_string ("Hello World")
+
+    -- Create from UTF-8
+    create z.make_from_utf_8 ("Bonjour le monde")
+
+    -- Append Unicode characters
+    z.append_character ((0x1F600).to_character_32)  -- Emoji
+
+    -- Convert back
+    print (z.to_string_32)
+    print (z.to_utf_8)
+end</code></pre>
+
+    <h2>Classes</h2>
+    <table>
+        <tr><th>Class</th><th>Description</th></tr>
+        <tr><td><code>SIMPLE_ZSTRING</code></td><td>Main dual-storage string class</td></tr>
+        <tr><td><code>SIMPLE_ZCODEC</code></td><td>Abstract character encoding codec</td></tr>
+        <tr><td><code>SIMPLE_ISO_8859_15_ZCODEC</code></td><td>ISO-8859-15 (Latin-9) codec</td></tr>
+        <tr><td><code>SIMPLE_COMPACT_SUBSTRINGS_32</code></td><td>Storage for unencoded characters</td></tr>
+        <tr><td><code>SIMPLE_ZSTRING_SPLITTER</code></td><td>String splitting operations</td></tr>
+        <tr><td><code>SIMPLE_ZSTRING_SEARCHER</code></td><td>String searching and matching</td></tr>
+        <tr><td><code>SIMPLE_ZSTRING_ESCAPER</code></td><td>XML, JSON, URL escaping</td></tr>
+        <tr><td><code>SIMPLE_ZSTRING_EDITOR</code></td><td>In-place string modifications</td></tr>
+        <tr><td><code>SIMPLE_ZSTRING_FORMATTER</code></td><td>Formatting and templates</td></tr>
+        <tr><td><code>SIMPLE_ZSTRING_BUILDER</code></td><td>Fluent string construction</td></tr>
+    </table>
+
+    <h2>Key Features</h2>
+    <ul>
+        <li><strong>UTF-8 Support</strong>: Full UTF-8 encoding and decoding</li>
+        <li><strong>Design by Contract</strong>: Preconditions, postconditions, invariants</li>
+        <li><strong>SCOOP Compatible</strong>: Thread-safe design</li>
+        <li><strong>Void Safety</strong>: Fully void-safe implementation</li>
+        <li><strong>182 Tests</strong>: Comprehensive test coverage</li>
+    </ul>
+
+    <h2>Installation</h2>
+    <pre><code>&lt;library name="simple_zstring" location="path/to/simple_zstring/simple_zstring.ecf"/&gt;</code></pre>
+
+    <h2>Dependencies</h2>
+    <ul>
+        <li>EiffelBase</li>
+        <li>simple_encoding</li>
+    </ul>
+
+    <footer style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #cbd5e1; color: var(--secondary);">
+        <p>Part of the <a href="https://github.com/simple-eiffel">Simple Eiffel</a> ecosystem.</p>
+    </footer>
+</body>
+</html>

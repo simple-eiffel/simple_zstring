@@ -1,0 +1,16 @@
+# EiffelStudio generated files
+EIFGENs/
+*.rc
+exception_trace.log
+
+# Backup files
+*.bak
+*~
+
+# IDE files
+.vscode/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
