@@ -3,119 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>simple_zstring - Memory-Efficient Unicode Strings</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --secondary: #64748b;
-            --bg: #f8fafc;
-            --text: #1e293b;
-            --code-bg: #1e1e1e;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-            background: var(--bg);
-        }
-        h1 { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 0.5rem; }
-        h2 { color: var(--secondary); margin-top: 2rem; }
-        code { background: #e2e8f0; padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
-        pre { background: var(--code-bg); color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; }
-        pre code { background: none; padding: 0; }
-        table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
-        th, td { border: 1px solid #cbd5e1; padding: 0.75rem; text-align: left; }
-        th { background: #e2e8f0; }
-        .badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; margin-right: 0.5rem; }
-        .badge-blue { background: #dbeafe; color: #1e40af; }
-        .badge-green { background: #dcfce7; color: #166534; }
-        .badge-orange { background: #ffedd5; color: #9a3412; }
-        .architecture { background: #f1f5f9; padding: 1rem; border-radius: 8px; font-family: monospace; }
-    </style>
+    <title>simple_zstring - Memory-Efficient Unicode Strings for Eiffel</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>simple_zstring</h1>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="simple_* logo" class="logo">
+        </div>
+        <h1>simple_zstring</h1>
+        <p class="tagline">Memory-Efficient Unicode Strings with Dual-Storage Architecture</p>
+        <div class="badges">
+            <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License">
+            <img src="https://img.shields.io/badge/Eiffel-25.02-purple.svg" alt="Eiffel 25.02">
+            <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
+        </div>
+    </header>
 
-    <p>
-        <span class="badge badge-blue">Eiffel 25.02</span>
-        <span class="badge badge-green">MIT License</span>
-        <span class="badge badge-orange">simple-eiffel</span>
-    </p>
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#quick-start">Quick Start</a></li>
+            <li><a href="#classes">Classes</a></li>
+            <li><a href="https://github.com/simple-eiffel/simple_zstring">GitHub</a></li>
+        </ul>
+    </nav>
 
-    <p>Memory-efficient Unicode string library with dual-storage architecture.</p>
+    <main>
+        <section id="overview">
+            <h2>Overview</h2>
+            <p>
+                <strong>simple_zstring</strong> provides memory-efficient Unicode string handling using a
+                dual-storage architecture. Characters are stored in an 8-bit primary area using ISO-8859-15
+                (Latin-9) encoding, with Unicode characters outside the codec range stored in a compact
+                secondary area.
+            </p>
+            <p>
+                This approach provides ~70% memory savings for Western European text while supporting the
+                full Unicode range including emoji and CJK characters.
+            </p>
+            <p>
+                Part of the <a href="https://github.com/simple-eiffel">Simple Eiffel</a> ecosystem.
+            </p>
+        </section>
 
-    <h2>Overview</h2>
-    <p>SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage architecture:</p>
-    <ul>
-        <li><strong>Primary Storage</strong>: 8-bit characters encoded using ISO-8859-15 (Latin-9)</li>
-        <li><strong>Secondary Storage</strong>: Compact storage for Unicode characters outside the codec range</li>
-    </ul>
-    <p>This approach provides ~70% memory savings for Western European text while supporting the full Unicode range.</p>
+        <section id="architecture">
+            <h2>Architecture</h2>
+            <p>
+                SIMPLE_ZSTRING uses dual storage to optimize memory while maintaining full Unicode support:
+            </p>
+<pre><code>SIMPLE_ZSTRING
+    area: SPECIAL [CHARACTER_8]           <span class="comment">-- Primary 8-bit storage</span>
+    unencoded_area: SIMPLE_COMPACT_SUBSTRINGS_32  <span class="comment">-- Unicode overflow</span>
+    codec: SIMPLE_ZCODEC                  <span class="comment">-- Character encoding</span></code></pre>
+            <p>
+                Characters encodable by the codec (ASCII + Latin-9) are stored directly in the 8-bit area.
+                Characters outside this range (emoji, CJK, etc.) are stored in the secondary area with a
+                substitute marker (ASCII 26) in the primary area.
+            </p>
+        </section>
 
-    <h2>Architecture</h2>
-    <div class="architecture">
-SIMPLE_ZSTRING
-    area: SPECIAL [CHARACTER_8]           -- Primary 8-bit storage
-    unencoded_area: SIMPLE_COMPACT_SUBSTRINGS_32  -- Unicode overflow
-    codec: SIMPLE_ZCODEC                  -- Character encoding
-    </div>
+        <section id="quick-start">
+            <h2>Quick Start</h2>
 
-    <h2>Quick Start</h2>
-    <pre><code>local
-    z: SIMPLE_ZSTRING
-do
-    -- Create from string
-    create z.make_from_string ("Hello World")
+            <h3>Installation</h3>
+            <p>Add to your ECF file:</p>
+<pre><code>&lt;library name="simple_zstring" location="path/to/simple_zstring/simple_zstring.ecf"/&gt;</code></pre>
 
-    -- Create from UTF-8
-    create z.make_from_utf_8 ("Bonjour le monde")
+            <h3>Basic Usage</h3>
+<pre><code><span class="keyword">local</span>
+    z: <span class="type">SIMPLE_ZSTRING</span>
+<span class="keyword">do</span>
+    <span class="comment">-- Create from string</span>
+    <span class="keyword">create</span> z.make_from_string (<span class="string">"Hello World"</span>)
 
-    -- Append Unicode characters
-    z.append_character ((0x1F600).to_character_32)  -- Emoji
+    <span class="comment">-- Create from UTF-8</span>
+    <span class="keyword">create</span> z.make_from_utf_8 (<span class="string">"Bonjour le monde"</span>)
 
-    -- Convert back
-    print (z.to_string_32)
-    print (z.to_utf_8)
-end</code></pre>
+    <span class="comment">-- Append Unicode characters (emoji)</span>
+    z.append_character ((0x1F600).to_character_32)
 
-    <h2>Classes</h2>
-    <table>
-        <tr><th>Class</th><th>Description</th></tr>
-        <tr><td><code>SIMPLE_ZSTRING</code></td><td>Main dual-storage string class</td></tr>
-        <tr><td><code>SIMPLE_ZCODEC</code></td><td>Abstract character encoding codec</td></tr>
-        <tr><td><code>SIMPLE_ISO_8859_15_ZCODEC</code></td><td>ISO-8859-15 (Latin-9) codec</td></tr>
-        <tr><td><code>SIMPLE_COMPACT_SUBSTRINGS_32</code></td><td>Storage for unencoded characters</td></tr>
-        <tr><td><code>SIMPLE_ZSTRING_SPLITTER</code></td><td>String splitting operations</td></tr>
-        <tr><td><code>SIMPLE_ZSTRING_SEARCHER</code></td><td>String searching and matching</td></tr>
-        <tr><td><code>SIMPLE_ZSTRING_ESCAPER</code></td><td>XML, JSON, URL escaping</td></tr>
-        <tr><td><code>SIMPLE_ZSTRING_EDITOR</code></td><td>In-place string modifications</td></tr>
-        <tr><td><code>SIMPLE_ZSTRING_FORMATTER</code></td><td>Formatting and templates</td></tr>
-        <tr><td><code>SIMPLE_ZSTRING_BUILDER</code></td><td>Fluent string construction</td></tr>
-    </table>
+    <span class="comment">-- Convert to different formats</span>
+    print (z.to_string_32)  <span class="comment">-- Full Unicode</span>
+    print (z.to_utf_8)      <span class="comment">-- UTF-8 bytes</span>
+<span class="keyword">end</span></code></pre>
 
-    <h2>Key Features</h2>
-    <ul>
-        <li><strong>UTF-8 Support</strong>: Full UTF-8 encoding and decoding</li>
-        <li><strong>Design by Contract</strong>: Preconditions, postconditions, invariants</li>
-        <li><strong>SCOOP Compatible</strong>: Thread-safe design</li>
-        <li><strong>Void Safety</strong>: Fully void-safe implementation</li>
-        <li><strong>182 Tests</strong>: Comprehensive test coverage</li>
-    </ul>
+            <h3>String Operations</h3>
+<pre><code><span class="keyword">local</span>
+    splitter: <span class="type">SIMPLE_ZSTRING_SPLITTER</span>
+    searcher: <span class="type">SIMPLE_ZSTRING_SEARCHER</span>
+    escaper: <span class="type">SIMPLE_ZSTRING_ESCAPER</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> splitter
+    <span class="keyword">create</span> searcher
+    <span class="keyword">create</span> escaper
 
-    <h2>Installation</h2>
-    <pre><code>&lt;library name="simple_zstring" location="path/to/simple_zstring/simple_zstring.ecf"/&gt;</code></pre>
+    <span class="comment">-- Split by character</span>
+    splitter.split_by_character (<span class="string">"a,b,c"</span>, ',')
 
-    <h2>Dependencies</h2>
-    <ul>
-        <li>EiffelBase</li>
-        <li>simple_encoding</li>
-    </ul>
+    <span class="comment">-- Search with wildcards</span>
+    searcher.matches_wildcard (<span class="string">"hello.txt"</span>, <span class="string">"*.txt"</span>)
 
-    <footer style="margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #cbd5e1; color: var(--secondary);">
-        <p>Part of the <a href="https://github.com/simple-eiffel">Simple Eiffel</a> ecosystem.</p>
+    <span class="comment">-- Escape for XML/JSON/URL</span>
+    escaper.escape_xml (<span class="string">"<tag>"</span>)
+    escaper.escape_json (<span class="string">"line\nbreak"</span>)
+    escaper.url_encode (<span class="string">"hello world"</span>)
+<span class="keyword">end</span></code></pre>
+        </section>
+
+        <section id="features">
+            <h2>Key Features</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Dual-Storage Architecture</h3>
+                    <p>8-bit primary storage with 32-bit overflow for memory efficiency.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>UTF-8 Support</h3>
+                    <p>Full UTF-8 encoding and decoding for interoperability.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>ISO-8859-15 Codec</h3>
+                    <p>Latin-9 encoding with Euro sign support for Western European text.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>String Utilities</h3>
+                    <p>Splitting, searching, escaping, formatting, and fluent building.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Design by Contract</h3>
+                    <p>Full preconditions, postconditions, and class invariants.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>SCOOP Compatible</h3>
+                    <p>Thread-safe design for concurrent Eiffel applications.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="classes">
+            <h2>Classes</h2>
+            <table class="api-table">
+                <tr>
+                    <th>Class</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING</code></td>
+                    <td>Main dual-storage string class</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZCODEC</code></td>
+                    <td>Abstract character encoding codec</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ISO_8859_15_ZCODEC</code></td>
+                    <td>ISO-8859-15 (Latin-9) codec implementation</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_COMPACT_SUBSTRINGS_32</code></td>
+                    <td>Compact storage for unencoded Unicode characters</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING_SPLITTER</code></td>
+                    <td>String splitting by character, string, lines, words</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING_SEARCHER</code></td>
+                    <td>String searching, wildcards, prefix/suffix matching</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING_ESCAPER</code></td>
+                    <td>XML, JSON, URL, CSV, shell escaping and unescaping</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING_EDITOR</code></td>
+                    <td>In-place string modifications (trim, replace, case)</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING_FORMATTER</code></td>
+                    <td>Padding, templates, number formatting, word wrap</td>
+                </tr>
+                <tr>
+                    <td><code>SIMPLE_ZSTRING_BUILDER</code></td>
+                    <td>Fluent string construction with method chaining</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="dependencies">
+            <h2>Dependencies</h2>
+            <ul>
+                <li><strong>EiffelBase</strong> - Standard library</li>
+                <li><strong>simple_encoding</strong> - Codec foundations</li>
+            </ul>
+        </section>
+
+        <section id="tests">
+            <h2>Tests</h2>
+            <p>182 tests covering all functionality:</p>
+            <ul>
+                <li>69 main tests for core operations</li>
+                <li>113 adversarial tests for edge cases</li>
+            </ul>
+<pre><code>ec -batch -config simple_zstring.ecf -target simple_zstring_tests -c_compile
+./EIFGENs/simple_zstring_tests/W_code/simple_zstring.exe</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 simple_* ecosystem. MIT License.</p>
+        <p>
+            <a href="https://github.com/simple-eiffel/simple_zstring">GitHub</a> |
+            <a href="https://simple-eiffel.github.io">Documentation</a>
+        </p>
     </footer>
 </body>
 </html>
