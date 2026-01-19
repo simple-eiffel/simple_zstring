@@ -21,8 +21,9 @@
 
 ✅ **Production Ready** — v1.0.0
 - 11 classes
-- 182 tests passing
-- Full Design by Contract coverage
+- **373 tests total**
+  - 191 internal (DBC contract assertions)
+  - 182 external (AutoTest unit tests)
 
 ## Overview
 
