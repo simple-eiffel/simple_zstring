@@ -1,10 +1,23 @@
-# simple_zstring
+<p align="center">
+  <img src="docs/images/logo.png" alt="simple_zstring logo" width="128">
+</p>
 
-[![Eiffel](https://img.shields.io/badge/Eiffel-25.02-blue.svg)](https://www.eiffel.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![simple-eiffel](https://img.shields.io/badge/simple--eiffel-ecosystem-orange.svg)](https://github.com/simple-eiffel)
+<h1 align="center">simple_zstring</h1>
+
+<p align="center">
+  <a href="https://simple-eiffel.github.io/simple_zstring/">Documentation</a> •
+  <a href="https://github.com/simple-eiffel/simple_zstring">GitHub</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT">
+  <img src="https://img.shields.io/badge/Eiffel-25.02-purple.svg" alt="Eiffel 25.02">
+  <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
+</p>
 
 Memory-efficient Unicode string library with dual-storage architecture for the Simple Eiffel ecosystem.
+
+Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
 
 ## Overview
 
@@ -102,7 +115,3 @@ ec -batch -config simple_zstring.ecf -target simple_zstring_tests -c_compile
 ## License
 
 MIT License - see LICENSE file for details.
-
-## Part of Simple Eiffel
-
-This library is part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem of production-ready Eiffel libraries.
