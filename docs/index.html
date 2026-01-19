@@ -3,227 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>simple_zstring - Memory-Efficient Unicode Strings for Eiffel</title>
+    <title>simple_zstring - Simple Eiffel Library</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
-        <div class="logo-container">
-            <img src="images/logo.png" alt="simple_* logo" class="logo">
-        </div>
-        <h1>simple_zstring</h1>
-        <p class="tagline">Memory-Efficient Unicode Strings with Dual-Storage Architecture</p>
-        <div class="badges">
-            <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License">
-            <img src="https://img.shields.io/badge/Eiffel-25.02-purple.svg" alt="Eiffel 25.02">
-            <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
+        <div class="container">
+            <img src="images/logo.png" alt="simple_zstring" class="logo">
+            <h1>simple_zstring</h1>
+            <p class="tagline">Memory-Efficient Unicode Strings with Dual-Storage Architecture</p>
+            <div class="badges">
+                <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License">
+                <img src="https://img.shields.io/badge/Eiffel-25.02-purple.svg" alt="Eiffel 25.02">
+                <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
+            </div>
         </div>
     </header>
 
     <nav>
-        <ul>
-            <li><a href="#overview">Overview</a></li>
-            <li><a href="#architecture">Architecture</a></li>
-            <li><a href="#quick-start">Quick Start</a></li>
-            <li><a href="#classes">Classes</a></li>
-            <li><a href="https://github.com/simple-eiffel/simple_zstring">GitHub</a></li>
-        </ul>
+        <div class="container">
+            <a href="#overview">Overview</a>
+            <a href="#quick-start">Quick Start</a>
+            <a href="#features">Features</a>
+            <a href="#api-reference">API Reference</a>
+            <a href="https://github.com/simple-eiffel/simple_zstring">GitHub</a>
+        </div>
     </nav>
 
     <main>
-        <section id="overview">
-            <h2>Overview</h2>
-            <p>
-                <strong>simple_zstring</strong> provides memory-efficient Unicode string handling using a
-                dual-storage architecture. Characters are stored in an 8-bit primary area using ISO-8859-15
-                (Latin-9) encoding, with Unicode characters outside the codec range stored in a compact
-                secondary area.
-            </p>
-            <p>
-                This approach provides ~70% memory savings for Western European text while supporting the
-                full Unicode range including emoji and CJK characters.
-            </p>
-            <p>
-                Part of the <a href="https://github.com/simple-eiffel">Simple Eiffel</a> ecosystem.
-            </p>
-        </section>
+        <div class="container">
+            <section id="overview">
+                <h2>Overview</h2>
+                <p>
+                    SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage
+                    architecture. Characters are stored in an 8-bit primary area using ISO-8859-15 (Latin-9)
+                    encoding, with Unicode characters outside the codec range stored in a compact secondary area.
+                </p>
+                <p>
+                    This approach provides ~70% memory savings for Western European text while supporting the
+                    full Unicode range including emoji and CJK characters. The library includes utilities for
+                    splitting, searching, escaping, formatting, and fluent string building.
+                </p>
+            </section>
 
-        <section id="architecture">
-            <h2>Architecture</h2>
-            <p>
-                SIMPLE_ZSTRING uses dual storage to optimize memory while maintaining full Unicode support:
-            </p>
-<pre><code>SIMPLE_ZSTRING
-    area: SPECIAL [CHARACTER_8]           <span class="comment">-- Primary 8-bit storage</span>
-    unencoded_area: SIMPLE_COMPACT_SUBSTRINGS_32  <span class="comment">-- Unicode overflow</span>
-    codec: SIMPLE_ZCODEC                  <span class="comment">-- Character encoding</span></code></pre>
-            <p>
-                Characters encodable by the codec (ASCII + Latin-9) are stored directly in the 8-bit area.
-                Characters outside this range (emoji, CJK, etc.) are stored in the secondary area with a
-                substitute marker (ASCII 26) in the primary area.
-            </p>
-        </section>
+            <section id="quick-start">
+                <h2>Quick Start</h2>
+                <pre><code class="language-eiffel">local
+    z: SIMPLE_ZSTRING
+do
+    create z.make_from_string ("Hello World")
+    create z.make_from_utf_8 ("Bonjour le monde")
+    z.append_character ((0x1F600).to_character_32)  -- Emoji
+    print (z.to_string_32)
+    print (z.to_utf_8)
+end</code></pre>
+            </section>
 
-        <section id="quick-start">
-            <h2>Quick Start</h2>
+            <section id="features">
+                <h2>Features</h2>
+                <ul>
+                    <li>Dual-storage architecture (8-bit primary + 32-bit overflow)</li>
+                    <li>UTF-8 encoding/decoding</li>
+                    <li>ISO-8859-15 codec (Latin-9 with Euro sign)</li>
+                    <li>String splitting, searching, escaping</li>
+                    <li>Formatting and templates</li>
+                    <li>Fluent builder pattern</li>
+                    <li>Design by Contract throughout</li>
+                    <li>Void-safe implementation</li>
+                    <li>SCOOP-compatible</li>
+                </ul>
+            </section>
 
-            <h3>Installation</h3>
-            <p>Add to your ECF file:</p>
-<pre><code>&lt;library name="simple_zstring" location="path/to/simple_zstring/simple_zstring.ecf"/&gt;</code></pre>
+            <section id="api-reference">
+                <h2>API Reference</h2>
 
-            <h3>Basic Usage</h3>
-<pre><code><span class="keyword">local</span>
-    z: <span class="type">SIMPLE_ZSTRING</span>
-<span class="keyword">do</span>
-    <span class="comment">-- Create from string</span>
-    <span class="keyword">create</span> z.make_from_string (<span class="string">"Hello World"</span>)
+                <h3>SIMPLE_ZSTRING</h3>
+                <p>Main dual-storage string class with 8-bit primary storage and 32-bit overflow.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>make (n)</code></td>
+                            <td>Create with capacity for n characters</td>
+                        </tr>
+                        <tr>
+                            <td><code>make_empty</code></td>
+                            <td>Create empty string</td>
+                        </tr>
+                        <tr>
+                            <td><code>make_from_string (s)</code></td>
+                            <td>Create from general string</td>
+                        </tr>
+                        <tr>
+                            <td><code>make_from_utf_8 (s)</code></td>
+                            <td>Create from UTF-8 bytes</td>
+                        </tr>
+                        <tr>
+                            <td><code>item (i)</code></td>
+                            <td>Character at position i</td>
+                        </tr>
+                        <tr>
+                            <td><code>append_character (c)</code></td>
+                            <td>Append character at end</td>
+                        </tr>
+                        <tr>
+                            <td><code>to_string_32</code></td>
+                            <td>Convert to full Unicode STRING_32</td>
+                        </tr>
+                        <tr>
+                            <td><code>to_utf_8</code></td>
+                            <td>Convert to UTF-8 encoded STRING_8</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    <span class="comment">-- Create from UTF-8</span>
-    <span class="keyword">create</span> z.make_from_utf_8 (<span class="string">"Bonjour le monde"</span>)
+                <h3>SIMPLE_ZSTRING_SPLITTER</h3>
+                <p>String splitting operations by character, string, lines, or words.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>split_by_character (s, c)</code></td>
+                            <td>Split string by character</td>
+                        </tr>
+                        <tr>
+                            <td><code>split_lines (s)</code></td>
+                            <td>Split into lines</td>
+                        </tr>
+                        <tr>
+                            <td><code>split_words (s)</code></td>
+                            <td>Split into words</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    <span class="comment">-- Append Unicode characters (emoji)</span>
-    z.append_character ((0x1F600).to_character_32)
+                <h3>SIMPLE_ZSTRING_SEARCHER</h3>
+                <p>String searching with wildcards and prefix/suffix matching.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>index_of (s, pat, start)</code></td>
+                            <td>Find pattern starting at position</td>
+                        </tr>
+                        <tr>
+                            <td><code>matches_wildcard (s, pat)</code></td>
+                            <td>Match with * and ? wildcards</td>
+                        </tr>
+                        <tr>
+                            <td><code>starts_with (s, prefix)</code></td>
+                            <td>Check prefix</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    <span class="comment">-- Convert to different formats</span>
-    print (z.to_string_32)  <span class="comment">-- Full Unicode</span>
-    print (z.to_utf_8)      <span class="comment">-- UTF-8 bytes</span>
-<span class="keyword">end</span></code></pre>
+                <h3>SIMPLE_ZSTRING_ESCAPER</h3>
+                <p>XML, JSON, URL, CSV, and shell escaping/unescaping.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>escape_xml (s)</code></td>
+                            <td>Escape for XML</td>
+                        </tr>
+                        <tr>
+                            <td><code>escape_json (s)</code></td>
+                            <td>Escape for JSON</td>
+                        </tr>
+                        <tr>
+                            <td><code>url_encode (s)</code></td>
+                            <td>URL percent-encoding</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
-            <h3>String Operations</h3>
-<pre><code><span class="keyword">local</span>
-    splitter: <span class="type">SIMPLE_ZSTRING_SPLITTER</span>
-    searcher: <span class="type">SIMPLE_ZSTRING_SEARCHER</span>
-    escaper: <span class="type">SIMPLE_ZSTRING_ESCAPER</span>
-<span class="keyword">do</span>
-    <span class="keyword">create</span> splitter
-    <span class="keyword">create</span> searcher
-    <span class="keyword">create</span> escaper
-
-    <span class="comment">-- Split by character</span>
-    splitter.split_by_character (<span class="string">"a,b,c"</span>, ',')
-
-    <span class="comment">-- Search with wildcards</span>
-    searcher.matches_wildcard (<span class="string">"hello.txt"</span>, <span class="string">"*.txt"</span>)
-
-    <span class="comment">-- Escape for XML/JSON/URL</span>
-    escaper.escape_xml (<span class="string">"<tag>"</span>)
-    escaper.escape_json (<span class="string">"line\nbreak"</span>)
-    escaper.url_encode (<span class="string">"hello world"</span>)
-<span class="keyword">end</span></code></pre>
-        </section>
-
-        <section id="features">
-            <h2>Key Features</h2>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>Dual-Storage Architecture</h3>
-                    <p>8-bit primary storage with 32-bit overflow for memory efficiency.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>UTF-8 Support</h3>
-                    <p>Full UTF-8 encoding and decoding for interoperability.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>ISO-8859-15 Codec</h3>
-                    <p>Latin-9 encoding with Euro sign support for Western European text.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>String Utilities</h3>
-                    <p>Splitting, searching, escaping, formatting, and fluent building.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>Design by Contract</h3>
-                    <p>Full preconditions, postconditions, and class invariants.</p>
-                </div>
-
-                <div class="feature-card">
-                    <h3>SCOOP Compatible</h3>
-                    <p>Thread-safe design for concurrent Eiffel applications.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="classes">
-            <h2>Classes</h2>
-            <table class="api-table">
-                <tr>
-                    <th>Class</th>
-                    <th>Description</th>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING</code></td>
-                    <td>Main dual-storage string class</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZCODEC</code></td>
-                    <td>Abstract character encoding codec</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ISO_8859_15_ZCODEC</code></td>
-                    <td>ISO-8859-15 (Latin-9) codec implementation</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_COMPACT_SUBSTRINGS_32</code></td>
-                    <td>Compact storage for unencoded Unicode characters</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING_SPLITTER</code></td>
-                    <td>String splitting by character, string, lines, words</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING_SEARCHER</code></td>
-                    <td>String searching, wildcards, prefix/suffix matching</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING_ESCAPER</code></td>
-                    <td>XML, JSON, URL, CSV, shell escaping and unescaping</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING_EDITOR</code></td>
-                    <td>In-place string modifications (trim, replace, case)</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING_FORMATTER</code></td>
-                    <td>Padding, templates, number formatting, word wrap</td>
-                </tr>
-                <tr>
-                    <td><code>SIMPLE_ZSTRING_BUILDER</code></td>
-                    <td>Fluent string construction with method chaining</td>
-                </tr>
-            </table>
-        </section>
-
-        <section id="dependencies">
-            <h2>Dependencies</h2>
-            <ul>
-                <li><strong>EiffelBase</strong> - Standard library</li>
-                <li><strong>simple_encoding</strong> - Codec foundations</li>
-            </ul>
-        </section>
-
-        <section id="tests">
-            <h2>Tests</h2>
-            <p>182 tests covering all functionality:</p>
-            <ul>
-                <li>69 main tests for core operations</li>
-                <li>113 adversarial tests for edge cases</li>
-            </ul>
-<pre><code>ec -batch -config simple_zstring.ecf -target simple_zstring_tests -c_compile
-./EIFGENs/simple_zstring_tests/W_code/simple_zstring.exe</code></pre>
-        </section>
+            <section id="installation">
+                <h2>Installation</h2>
+                <p>Add to your ECF file:</p>
+                <pre><code class="language-xml">&lt;library name="simple_zstring" location="$SIMPLE_LIBS/simple_zstring/simple_zstring.ecf"/&gt;</code></pre>
+            </section>
+        </div>
     </main>
 
     <footer>
-        <p>&copy; 2025 simple_* ecosystem. MIT License.</p>
-        <p>
-            <a href="https://github.com/simple-eiffel/simple_zstring">GitHub</a> |
-            <a href="https://simple-eiffel.github.io">Documentation</a>
-        </p>
+        <div class="container">
+            <p>&copy; 2026 Simple Eiffel. <a href="https://github.com/simple-eiffel">GitHub</a></p>
+        </div>
     </footer>
 </body>
 </html>

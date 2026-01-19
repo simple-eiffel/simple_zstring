@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/logo.png" alt="simple_zstring logo" width="128">
+  <img src="docs/images/logo.png" alt="simple_zstring logo" width="200">
 </p>
 
 <h1 align="center">simple_zstring</h1>
@@ -15,36 +15,20 @@
   <img src="https://img.shields.io/badge/DBC-Contracts-green.svg" alt="Design by Contract">
 </p>
 
-Memory-efficient Unicode string library with dual-storage architecture for the Simple Eiffel ecosystem.
+**Memory-efficient Unicode string library with dual-storage architecture** — Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
 
-Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
+## Status
+
+✅ **Production Ready** — v1.0.0
+- 11 classes
+- 182 tests passing
+- Full Design by Contract coverage
 
 ## Overview
 
-SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage architecture:
+SIMPLE_ZSTRING provides memory-efficient Unicode string handling using a dual-storage architecture. Characters are stored in an 8-bit primary area using ISO-8859-15 (Latin-9) encoding, with Unicode characters outside the codec range stored in a compact secondary area.
 
-- **Primary Storage**: 8-bit characters encoded using ISO-8859-15 (Latin-9)
-- **Secondary Storage**: Compact storage for Unicode characters outside the codec range
-
-This approach provides significant memory savings (~70%) for Western European text while supporting the full Unicode range.
-
-## Features
-
-- **Dual-Storage Architecture**: Efficient memory usage for mixed ASCII/Unicode content
-- **UTF-8 Support**: Full UTF-8 encoding and decoding
-- **ISO-8859-15 Codec**: Latin-9 encoding with Euro sign support
-- **String Operations**: Splitting, searching, escaping, formatting
-- **Design by Contract**: Full preconditions, postconditions, and invariants
-- **SCOOP Compatible**: Thread-safe design for concurrent applications
-- **Void Safety**: Fully void-safe implementation
-
-## Installation
-
-Add to your ECF file:
-
-```xml
-<library name="simple_zstring" location="path/to/simple_zstring/simple_zstring.ecf"/>
-```
+This approach provides ~70% memory savings for Western European text while supporting the full Unicode range including emoji and CJK characters. The library includes utilities for splitting, searching, escaping, formatting, and fluent string building.
 
 ## Quick Start
 
@@ -52,66 +36,126 @@ Add to your ECF file:
 local
     z: SIMPLE_ZSTRING
 do
-    -- Create from string
     create z.make_from_string ("Hello World")
-
-    -- Create from UTF-8
     create z.make_from_utf_8 ("Bonjour le monde")
-
-    -- Append Unicode characters
     z.append_character ((0x1F600).to_character_32)  -- Emoji
-
-    -- Convert back
     print (z.to_string_32)
     print (z.to_utf_8)
 end
 ```
 
-## Classes
+## API Reference
 
-| Class | Description |
-|-------|-------------|
-| `SIMPLE_ZSTRING` | Main dual-storage string class |
-| `SIMPLE_ZCODEC` | Abstract character encoding codec |
-| `SIMPLE_ISO_8859_15_ZCODEC` | ISO-8859-15 (Latin-9) codec |
-| `SIMPLE_COMPACT_SUBSTRINGS_32` | Storage for unencoded characters |
-| `SIMPLE_ZSTRING_SPLITTER` | String splitting operations |
-| `SIMPLE_ZSTRING_SEARCHER` | String searching and matching |
-| `SIMPLE_ZSTRING_ESCAPER` | XML, JSON, URL escaping |
-| `SIMPLE_ZSTRING_EDITOR` | In-place string modifications |
-| `SIMPLE_ZSTRING_FORMATTER` | Formatting and templates |
-| `SIMPLE_ZSTRING_BUILDER` | Fluent string construction |
+### SIMPLE_ZSTRING
 
-## Architecture
+| Feature | Description |
+|---------|-------------|
+| `make (n)` | Create with capacity for n characters |
+| `make_empty` | Create empty string |
+| `make_from_string (s)` | Create from general string |
+| `make_from_utf_8 (s)` | Create from UTF-8 bytes |
+| `item (i)` | Character at position i |
+| `put (c, i)` | Replace character at position i |
+| `append_character (c)` | Append character at end |
+| `insert_character (c, i)` | Insert character at position i |
+| `remove (i)` | Remove character at position i |
+| `substring (s, e)` | Extract substring from s to e |
+| `to_string_32` | Convert to full Unicode STRING_32 |
+| `to_utf_8` | Convert to UTF-8 encoded STRING_8 |
+| `is_ascii` | True if all characters are ASCII |
+| `has_mixed_encoding` | True if contains unencoded characters |
 
+### SIMPLE_ZSTRING_SPLITTER
+
+| Feature | Description |
+|---------|-------------|
+| `split_by_character (s, c)` | Split string by character |
+| `split_by_string (s, sep)` | Split by string separator |
+| `split_lines (s)` | Split into lines |
+| `split_words (s)` | Split into words |
+
+### SIMPLE_ZSTRING_SEARCHER
+
+| Feature | Description |
+|---------|-------------|
+| `index_of (s, pat, start)` | Find pattern starting at position |
+| `occurrence_count (s, pat)` | Count occurrences of pattern |
+| `matches_wildcard (s, pat)` | Match with * and ? wildcards |
+| `starts_with (s, prefix)` | Check prefix |
+| `ends_with (s, suffix)` | Check suffix |
+
+### SIMPLE_ZSTRING_ESCAPER
+
+| Feature | Description |
+|---------|-------------|
+| `escape_xml (s)` | Escape for XML |
+| `unescape_xml (s)` | Unescape XML entities |
+| `escape_json (s)` | Escape for JSON |
+| `unescape_json (s)` | Unescape JSON |
+| `url_encode (s)` | URL percent-encoding |
+| `url_decode (s)` | URL decoding |
+
+### SIMPLE_ZSTRING_FORMATTER
+
+| Feature | Description |
+|---------|-------------|
+| `pad_left (s, w, c)` | Pad to width with character on left |
+| `pad_right (s, w, c)` | Pad to width with character on right |
+| `center (s, w, c)` | Center in field of width |
+| `substitute (t, vals)` | Replace ${key} placeholders |
+| `join (list, sep)` | Join strings with separator |
+
+### SIMPLE_ZSTRING_BUILDER
+
+| Feature | Description |
+|---------|-------------|
+| `make` | Create empty builder |
+| `append (s)` | Append string (fluent) |
+| `append_character (c)` | Append character (fluent) |
+| `append_integer (n)` | Append integer (fluent) |
+| `append_new_line` | Append newline (fluent) |
+| `to_string_32` | Get result as STRING_32 |
+
+## Features
+
+- ✅ Dual-storage architecture (8-bit primary + 32-bit overflow)
+- ✅ UTF-8 encoding/decoding
+- ✅ ISO-8859-15 codec (Latin-9 with Euro sign)
+- ✅ String splitting, searching, escaping
+- ✅ Formatting and templates
+- ✅ Fluent builder pattern
+- ✅ Design by Contract throughout
+- ✅ Void-safe
+- ✅ SCOOP-compatible
+
+## Installation
+
+### Using as ECF Dependency
+
+Add to your `.ecf` file:
+
+```xml
+<library name="simple_zstring" location="$SIMPLE_LIBS/simple_zstring/simple_zstring.ecf"/>
 ```
-SIMPLE_ZSTRING
-    area: SPECIAL [CHARACTER_8]           -- Primary 8-bit storage
-    unencoded_area: SIMPLE_COMPACT_SUBSTRINGS_32  -- Unicode overflow
-    codec: SIMPLE_ZCODEC                  -- Character encoding
-```
 
-Characters are stored in the primary 8-bit area when possible. Characters outside the codec's range are stored in the secondary area with a substitute marker (ASCII 26) in the primary area.
+### Environment Setup
+
+Set the `SIMPLE_LIBS` environment variable:
+```bash
+export SIMPLE_LIBS=/path/to/simple/libraries
+```
 
 ## Dependencies
 
-- EiffelBase
-- simple_encoding (for codec foundations)
-
-## Tests
-
-182 tests covering:
-- Core ZSTRING operations
-- Codec encoding/decoding
-- UTF-8 conversion
-- Dual-storage edge cases
-- All utility classes
-
-```bash
-ec -batch -config simple_zstring.ecf -target simple_zstring_tests -c_compile
-./EIFGENs/simple_zstring_tests/W_code/simple_zstring.exe
-```
+| Library | Purpose |
+|---------|---------|
+| EiffelBase | Standard library |
+| simple_encoding | Codec foundations |
 
 ## License
 
-MIT License - see LICENSE file for details.
+MIT License - see [LICENSE](LICENSE) file.
+
+---
+
+Part of the [Simple Eiffel](https://github.com/simple-eiffel) ecosystem.
