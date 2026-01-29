@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/logo.png" alt="simple_zstring logo" width="200">
+  <img src="docs/images/logo.svg" alt="simple_zstring logo" width="200">
 </p>
 
 <h1 align="center">simple_zstring</h1>
